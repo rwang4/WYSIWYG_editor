@@ -1,13 +1,14 @@
 import './EditorTile.css';
-import TitleIcon from '@mui/icons-material/Title';
 
 function EditorTile(props) {
   return (
-    <div className="tile--block">
-      <div className="tile--media">
-        <TitleIcon />
+    <div className="editor-tile" title="Text" draggable="true">
+      <div className="editor-tile-media">
+        <svg viewBox="0 0 24 24">
+          <path fill="currentColor" d={props.svgPath}></path>
+        </svg>
       </div>
-      <div className="tile--label">Text</div>
+      <div className="editor-tile-label">{props.label}</div>
     </div>
   );
 }

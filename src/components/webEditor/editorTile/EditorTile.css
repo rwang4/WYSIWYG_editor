@@ -1,0 +1,45 @@
+.editor-tile {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  width: 45%;
+  min-width: 45px;
+  padding: 1em;
+  box-sizing: border-box;
+  min-height: 90px;
+  cursor: all-scroll;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  color: #c4daef;
+  background-color: #373d49;
+  justify-content: space-between;
+  border: 1.5px solid rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  margin: 10px 2.5% 5px;
+  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.25);
+  transition: all 0.2s ease 0s;
+  transition-property: box-shadow, color;
+}
+.editor-tile:hover {
+  box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.15);
+  color: #35d7bb;
+}
+.editor-tile-media {
+  margin-bottom: 10px;
+  pointer-events: none;
+}
+.editor-tile-media svg {
+  width: 54px;
+}
+.editor-tile-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  line-height: normal;
+  font-size: 0.65rem;
+  font-weight: normal;
+}

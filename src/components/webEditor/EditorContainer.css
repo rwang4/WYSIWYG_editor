@@ -1,5 +1,4 @@
 .editor-container {
-  height: 100%;
   display: flex;
   background-color: #2b2c37;
   flex-wrap: wrap;
@@ -7,8 +6,16 @@
   right: 0;
   width: 15%;
   overflow: auto;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 5px 0px;
+  box-sizing: border-box;
 }
 
 .editor-container--preview {
   display: none;
+}
+.editor-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  height: 50vh;
 }

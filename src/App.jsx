@@ -4,6 +4,7 @@ import './App.css';
 import EditorContainer from './components/webEditor/EditorContainer';
 import Header from './components/header/Header';
 import { ModeProvider } from './ModeContext';
+import CustomizeApp from './components/customizes/CustomizeApp';
 
 function App() {
   const [isEdit, setMode] = useState(true);
@@ -16,7 +17,10 @@ function App() {
     <div className="App">
       <ModeProvider value={{ isEdit, changeMode }}>
         <Header />
-        <EditorContainer />
+        <div className="rowC">
+          <CustomizeApp />
+          <EditorContainer />
+        </div>
       </ModeProvider>
     </div>
   );

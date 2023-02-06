@@ -1,0 +1,10 @@
+.customize--container {
+  box-sizing: border-box;
+
+  width: 85%;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 1;
+  position: relative;
+  left: 0;
+}
