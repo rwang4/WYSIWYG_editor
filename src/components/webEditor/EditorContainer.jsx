@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useContext } from 'react';
 import './EditorContainer.css';
 import ModeContext from '../../ModeContext';
 import EditorTile from './editorTile/EditorTile';
