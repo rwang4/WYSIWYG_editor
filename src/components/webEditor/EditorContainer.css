@@ -1,0 +1,15 @@
+.editor-container {
+  margin: 0;
+  height: 100%;
+  display: flex;
+  background-color: #2b2c37;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  right: 0;
+  width: 15%;
+  overflow: auto;
+}
+
+.editor-container--preview {
+  display: none;
+}
