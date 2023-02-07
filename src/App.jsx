@@ -1,10 +1,10 @@
 import { useState } from 'react';
-
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
-import EditorContainer from './components/webEditor/EditorContainer';
-import Header from './components/header/Header';
-import { ModeProvider } from './ModeContext';
-import CustomizeApp from './components/customizes/CustomizeApp';
+import { ModeProvider } from './contexts/ModeContext';
+import { RefProvider } from './contexts/RefContext';
+import MainApp from './components/mainApp';
+import CustomApp from './components/custom/CustomApp';
 
 function App() {
   const [isEdit, setMode] = useState(true);
@@ -15,13 +15,16 @@ function App() {
 
   return (
     <div className="App">
-      <ModeProvider value={{ isEdit, changeMode }}>
-        <Header />
-        <div className="rowC">
-          <CustomizeApp />
-          <EditorContainer />
-        </div>
-      </ModeProvider>
+      <RefProvider>
+        <ModeProvider value={{ isEdit, changeMode }}>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<MainApp />} />
+              <Route path="/customApp/" element={<CustomApp />} />
+            </Routes>
+          </BrowserRouter>
+        </ModeProvider>
+      </RefProvider>
     </div>
   );
 }

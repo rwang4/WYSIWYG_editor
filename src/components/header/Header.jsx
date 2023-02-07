@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import './Header.css';
-import ModeContext from '../../ModeContext';
+import ModeContext from '../../contexts/ModeContext';
 import { ToggleButton } from '@mui/material';
 import { styled } from '@mui/system';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -39,7 +39,7 @@ function Header() {
         </div>
         <div className="btn-container code">
           <span>Export</span>
-          <StyledToggleButton value={'code'} onChange={() => {}} hoverColor="#13152e">
+          <StyledToggleButton value={'code'} onChange={() => {}} hovercolor="#13152e">
             <CodeIcon color="secondary" />
           </StyledToggleButton>
         </div>

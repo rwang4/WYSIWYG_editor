@@ -1,24 +1,38 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRefContext } from '../../../contexts/RefContext';
 
 import './EditorTile.css';
 
 function EditorTile(props) {
+  const iFrameRef = useRefContext();
+  const [ref, setRef] = useState(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
   const [xAxis, setXAxis] = useState(0);
+
+  useEffect(() => {
+    setRef(iFrameRef);
+  }, [iFrameRef]);
+
+  useEffect(() => {
+    if (x == 0 || y == 0 || !ref) return;
+    ref.current.contentWindow.postMessage(JSON.stringify({ type: props.label, x: x, y: y }), '*');
+    console.log(x, y);
+    setX(0);
+    setY(0);
+  }, [x, y]);
+
   const handleDragStart = (event) => {
     // This method runs when the dragging starts
     console.log('Started');
   };
   const handleDrag = (event) => {
     setXAxis(event.clientX);
-    console.log(xAxis);
   };
   const handleDragEnd = (event) => {
     setX(event.clientX);
     setY(event.clientY);
     setXAxis(0);
-    console.log(x, y);
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import './EditorContainer.css';
-import ModeContext from '../../ModeContext';
+import ModeContext from '../../contexts/ModeContext';
 import EditorTile from './editorTile/EditorTile';
 import svgData from '../../data/SvgData';
 

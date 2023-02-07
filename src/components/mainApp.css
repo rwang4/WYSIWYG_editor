@@ -1,0 +1,10 @@
+.mainApp {
+  height: 100vh;
+  display: flex;
+  flex-flow: column;
+}
+.rowC {
+  height: 100vh;
+  display: flex;
+  flex-flow: row;
+}
