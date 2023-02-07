@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useRefContext } from '../../../contexts/RefContext';
+import useRefContext from '../../../contexts/RefContext';
 
 import './EditorTile.css';
 
@@ -23,7 +23,6 @@ function EditorTile(props) {
   }, [x, y]);
 
   const handleDragStart = (event) => {
-    // This method runs when the dragging starts
     console.log('Started');
   };
   const handleDrag = (event) => {

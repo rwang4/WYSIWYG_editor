@@ -1,11 +1,10 @@
-import { useContext } from 'react';
 import './EditorContainer.css';
-import ModeContext from '../../contexts/ModeContext';
+import useModeContext from '../../contexts/ModeContext';
 import EditorTile from './editorTile/EditorTile';
 import svgData from '../../data/SvgData';
 
 function EditorContainer() {
-  const { isEdit } = useContext(ModeContext);
+  const { isEdit } = useModeContext();
   const editorTiles = svgData.map((svg) => {
     return <EditorTile key={svg.id} label={svg.label} svgPath={svg.svgPath} fill={svg.fill} />;
   });

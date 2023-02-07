@@ -1,6 +1,6 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import './Header.css';
-import ModeContext from '../../contexts/ModeContext';
+import useModeContext from '../../contexts/ModeContext';
 import { ToggleButton } from '@mui/material';
 import { styled } from '@mui/system';
 import PreviewIcon from '@mui/icons-material/Preview';
@@ -17,15 +17,16 @@ const StyledToggleButton = styled(ToggleButton)(({ hovercolor }) => ({
   }
 }));
 function Header() {
-  const { isEdit } = useContext(ModeContext);
+  const { isEdit } = useModeContext();
   const [isChecked, setChecked] = useState(isEdit);
-  const modeContext = useContext(ModeContext);
+  const modeContext = useModeContext();
+
   return (
     <div className="header">
       <h1>WYSIWYG Editor</h1>
       <div className="nav-btns">
         <div className="btn-container mode">
-          <span>{isChecked ? 'Preview Mode' : 'Edit Mode'}</span>
+          <span>{isChecked ? 'Preview' : 'Edit'}</span>
           <StyledToggleButton
             value={isChecked ? 'preview' : 'edit'}
             selected={isChecked}

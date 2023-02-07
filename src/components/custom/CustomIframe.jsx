@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useRefContext } from '../../contexts/RefContext';
+import useRefContext from '../../contexts/RefContext';
 
 const CustomIframe = ({ children, ...props }) => {
   const iFrameRef = useRefContext();

@@ -1,4 +1,4 @@
-.customize--container {
+.custom-container {
   box-sizing: border-box;
   width: 85%;
   bottom: 0;
@@ -7,7 +7,6 @@
   position: relative;
   left: 0;
 }
-.customize--page {
+.custom-container.preview {
   width: 100%;
-  height: 100%;
 }
