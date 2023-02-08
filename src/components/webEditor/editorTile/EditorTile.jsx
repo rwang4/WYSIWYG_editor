@@ -8,7 +8,6 @@ function EditorTile(props) {
   const [ref, setRef] = useState(null);
   const [x, setX] = useState(0);
   const [y, setY] = useState(0);
-  const [xAxis, setXAxis] = useState(0);
 
   useEffect(() => {
     setRef(iFrameRef);
@@ -16,8 +15,7 @@ function EditorTile(props) {
 
   useEffect(() => {
     if (x == 0 || y == 0 || !ref) return;
-    ref.current.contentWindow.postMessage(JSON.stringify({ type: props.label, x: x, y: y }), '*');
-    console.log(x, y);
+    ref?.current?.contentWindow.postMessage(JSON.stringify({ type: props.label, x: x, y: y }), '*');
     setX(0);
     setY(0);
   }, [x, y]);
@@ -25,13 +23,9 @@ function EditorTile(props) {
   const handleDragStart = (event) => {
     console.log('Started');
   };
-  const handleDrag = (event) => {
-    setXAxis(event.clientX);
-  };
   const handleDragEnd = (event) => {
     setX(event.clientX);
     setY(event.clientY);
-    setXAxis(0);
   };
 
   return (
@@ -40,7 +34,6 @@ function EditorTile(props) {
       title="Text"
       draggable
       onDragStart={handleDragStart}
-      onDrag={handleDrag}
       onDragEnd={handleDragEnd}>
       <div className="editor-tile-media">
         <svg viewBox="0 0 24 24">

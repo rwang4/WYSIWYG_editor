@@ -8,12 +8,7 @@ function CustomContainer() {
 
   return (
     <div className={isEdit ? 'custom-container' : 'custom-container preview'}>
-      <iframe
-        ref={iFrameRef}
-        src="/customApp"
-        width="100%"
-        height="100%"
-        title="Custom App"></iframe>
+      <iframe key="/customApp" ref={iFrameRef} src="/customApp" width="100%" height="100%"></iframe>
     </div>
   );
 }

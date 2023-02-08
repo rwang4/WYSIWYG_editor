@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import PreviewIcon from '@mui/icons-material/Preview';
 import EditIcon from '@mui/icons-material/Edit';
 import CodeIcon from '@mui/icons-material/Code';
+import useRefContext from '../../contexts/RefContext';
 
 const StyledToggleButton = styled(ToggleButton)(({ hovercolor }) => ({
   '&.Mui-selected:hover, &.MuiToggleButton-root:hover': {
@@ -18,6 +19,7 @@ const StyledToggleButton = styled(ToggleButton)(({ hovercolor }) => ({
 }));
 function Header() {
   const { isEdit } = useModeContext();
+  const iFrameRef = useRefContext();
   const [isChecked, setChecked] = useState(isEdit);
   const modeContext = useModeContext();
 
@@ -33,6 +35,7 @@ function Header() {
             onChange={() => {
               modeContext.changeMode();
               setChecked(!isChecked);
+              iFrameRef?.current?.contentWindow.postMessage('modeChange', '*');
             }}
             hovercolor="#13152e">
             {isChecked ? <PreviewIcon color="secondary" /> : <EditIcon color="secondary" />}
