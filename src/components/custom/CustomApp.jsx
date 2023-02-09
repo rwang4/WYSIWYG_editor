@@ -285,7 +285,12 @@ function CustomApp() {
           );
         case 'btn':
           return (
-            <button key={i} style={comp.style}>
+            <button
+              key={i}
+              style={comp.style}
+              onClick={() => {
+                alert('Button Clicked');
+              }}>
               {comp.text}
             </button>
           );
@@ -296,7 +301,7 @@ function CustomApp() {
         case 'form':
           return (
             <div key={i} style={comp.style} className={'custom-form'}>
-              <form style={formStyleData}>
+              <form style={formStyleData} action="">
                 <label>First Name</label>
                 <input
                   type="text"
@@ -322,7 +327,12 @@ function CustomApp() {
                   <option value="usa">USA</option>
                 </select>
 
-                <button type="button" style={formStyleData.custom_form_button}>
+                <button
+                  type="button"
+                  style={formStyleData.custom_form_button}
+                  onClick={() => {
+                    alert('Form Submit');
+                  }}>
                   submit
                 </button>
               </form>
