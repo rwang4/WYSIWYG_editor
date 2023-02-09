@@ -1,3 +1,6 @@
+/**
+ * This is a global context to store a reference of DOM Element - Custom App**
+ */
 import { createContext, createRef, useContext } from 'react';
 
 const RefContext = createContext();

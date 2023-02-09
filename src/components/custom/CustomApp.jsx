@@ -1,21 +1,69 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, createRef } from 'react';
 import './CustomApp.css';
 import { txtDef, btnDef, imgDef, inputDef, formDef } from '../../data/ComponentData';
 import FormDialog from './form/FormDialog';
+import { formStyleData } from '../../data/StyleData';
 
+/**
+ * custom application component
+ * Attributes
+    ----------
+    compCount: int
+        stores number of components that has been added
+    previewRef: HTML Object
+        stores reference of preview HTML document
+    clientSize : [windowWidth,windowHeight]
+        dynamically stores Custom App window's width and height
+    componentList : Object List
+        contains all objects that used to create component objects in Custom App 
+    previewComponent : 
+        a list of preview component objects
+    isMode : bool
+        edit mode: true, preview mode:false
+    open : bool
+        Edittor Dialog shows when open: true
+    currentComp : Object
+        object of current dragging component
+    Methods
+    -------
+    checkOverflow (x, y, width, height, windowSize)
+        check whether component's new position after drag and drop is located inside the window
+        if the new position of the component cause overflow return true else return false
+    eventHandler(event)
+        handles event when message passed from parent window.
+        if message is modeChange: change isMode value
+        else: add a new component object to the componentList with the x,y data passed from parent window
+    dragEndHandler(event, id, isSpecial)
+        handles event when component is drag and drop, set the new component inside componentList and re-render   the componentList
+ */
 function CustomApp() {
   const compCount = useRef(0);
+  const previewRef = createRef();
   const [clientSize, setClientSize] = useState([window.innerWidth, window.innerHeight]);
-  const [editComponentList, setEditComponentList] = useState([]);
+  const [componentList, setComponentList] = useState([]);
+  const [previewComponent, setpreviewComponent] = useState([]);
   const [isMode, setMode] = useState(true);
   const [open, setOpen] = useState(false);
   const [currentComp, setCurrentComp] = useState({});
+
   const addEditComponent = (comp) => {
-    setEditComponentList([...editComponentList, comp]);
+    setComponentList([...componentList, comp]);
   };
   const changeMode = () => {
     setMode(!isMode);
   };
+
+  const checkOverflow = (x, y, width, height, windowSize) => {
+    if (
+      x + width / 2 > windowSize[0] ||
+      y + height / 2 > windowSize[1] ||
+      y - height / 2 < 0 ||
+      x - width / 2 < 0
+    ) {
+      return true;
+    }
+  };
+
   const eventHandler = (event) => {
     if (event.data == 'modeChange') {
       changeMode();
@@ -92,16 +140,53 @@ function CustomApp() {
               top: `${dataObj.y - imgDef.height / 2}px`,
               borderRadius: imgDef.borderRadius,
               height: imgDef.height,
-              width: imgDef.width,
-              overflow: 'hidden'
+              width: imgDef.width
             }
           });
           compCount.current += 1;
           break;
         case 'Input':
+          if (checkOverflow(dataObj.x, dataObj.y, inputDef.width, inputDef.height, clientSize)) {
+            break;
+          }
+          addEditComponent({
+            id: compCount.current,
+            type: 'input',
+            inType: inputDef.inType,
+            width: inputDef.width,
+            height: inputDef.height,
+            style: {
+              position: 'absolute',
+              left: `${dataObj.x - inputDef.width / 2}px`,
+              top: `${dataObj.y - inputDef.height / 2}px `,
+              boxSizing: inputDef.boxSizing,
+              border: inputDef.border,
+              height: inputDef.height,
+              width: inputDef.width
+            }
+          });
           compCount.current += 1;
           break;
         case 'Form':
+          if (checkOverflow(dataObj.x, dataObj.y, formDef.width, formDef.height, clientSize)) {
+            break;
+          }
+          addEditComponent({
+            id: compCount.current,
+            type: 'form',
+            width: formDef.width,
+            height: formDef.height,
+            style: {
+              position: 'absolute',
+              left: `${dataObj.x - formDef.width / 2}px`,
+              top: `${dataObj.y - formDef.height / 2}px `,
+              height: formDef.height,
+              width: formDef.width,
+              borderRadius: formDef.borderRadius,
+              backgroundColor: formDef.bgColor,
+              padding: formDef.padding
+            }
+          });
           compCount.current += 1;
           break;
         default:
@@ -110,7 +195,7 @@ function CustomApp() {
     }
   };
   const openHandler = (id) => {
-    editComponentList.map((comp, i) => {
+    componentList.map((comp, i) => {
       if (i === id) {
         setCurrentComp(comp);
       }
@@ -123,7 +208,7 @@ function CustomApp() {
   };
 
   const dragEndHandler = (event, id, isSpecial) => {
-    const draggedComponent = editComponentList.map((comp, i) => {
+    const draggedComponent = componentList.map((comp, i) => {
       const posX = isSpecial
         ? event.clientX - (2 * comp.width) / 2
         : event.clientX - comp.width / 2;
@@ -151,15 +236,16 @@ function CustomApp() {
         return comp;
       }
     });
-    setEditComponentList(draggedComponent);
+    setComponentList(draggedComponent);
   };
-
+  // eventListener listen to messages passed from parent window
   useEffect(() => {
     window.addEventListener('message', eventHandler, false);
     return () => {
       window.removeEventListener('message', eventHandler);
     };
   });
+  // eventListener listen to window size change
   useEffect(() => {
     const handleWindowResize = () => {
       setClientSize([window.innerWidth, window.innerHeight]);
@@ -171,21 +257,91 @@ function CustomApp() {
       window.removeEventListener('resize', handleWindowResize);
     };
   });
+
+  // when dragging component re-renders, set new editted component to the componentList
   useEffect(() => {
-    const newEditedList = editComponentList.map((comp, i) => {
+    const newEditedList = componentList.map((comp, i) => {
       if (i === currentComp.id) {
         return currentComp;
       } else {
         return comp;
       }
     });
-    setEditComponentList(newEditedList);
+    setComponentList(newEditedList);
   }, [currentComp]);
+  // when mode changes to preview mode, set preview components according to the componentList
+  useEffect(() => {
+    if (isMode) {
+      setComponentList(componentList);
+      return;
+    }
+    const prevComponents = componentList.map((comp, i) => {
+      switch (comp.type) {
+        case 'txt':
+          return (
+            <p key={i} style={comp.style}>
+              {comp.text}
+            </p>
+          );
+        case 'btn':
+          return (
+            <button key={i} style={comp.style}>
+              {comp.text}
+            </button>
+          );
+        case 'img':
+          return <img key={i} src={comp.src} alt={comp.alt} style={comp.style} />;
+        case 'input':
+          return <input key={i} type={comp.inType} style={comp.style} />;
+        case 'form':
+          return (
+            <div key={i} style={comp.style} className={'custom-form'}>
+              <form style={formStyleData}>
+                <label>First Name</label>
+                <input
+                  type="text"
+                  id="fname"
+                  name="firstname"
+                  placeholder="Your name.."
+                  style={formStyleData.custom_form_input_type__text}
+                />
+
+                <label>Last Name</label>
+                <input
+                  type="text"
+                  id="lname"
+                  name="lastname"
+                  placeholder="Your last name.."
+                  style={formStyleData.custom_form_input_type__text}
+                />
+
+                <label>Country</label>
+                <select id="country" name="country" style={formStyleData.custom_form_select}>
+                  <option value="australia">Australia</option>
+                  <option value="canada">Canada</option>
+                  <option value="usa">USA</option>
+                </select>
+
+                <button type="button" style={formStyleData.custom_form_button}>
+                  submit
+                </button>
+              </form>
+            </div>
+          );
+      }
+    });
+    setpreviewComponent(prevComponents);
+  }, [isMode]);
+
+  // when preview component changes, send the innerHTML to the parent window for code export
+  useEffect(() => {
+    window.parent.postMessage(previewRef?.current?.innerHTML, '*');
+  }, [previewComponent]);
 
   return (
     <div className="custom-app">
       {isMode ? (
-        editComponentList.map((comp, i) => {
+        componentList.map((comp, i) => {
           switch (comp.type) {
             case 'txt':
               return (
@@ -226,10 +382,66 @@ function CustomApp() {
                   }}
                 />
               );
+            case 'input':
+              return (
+                <input
+                  key={comp.id}
+                  type={comp.inType}
+                  style={comp.style}
+                  draggable
+                  onDragEnd={(e) => {
+                    dragEndHandler(e, i, false);
+                  }}
+                />
+              );
+            case 'form':
+              return (
+                <div
+                  key={comp.id}
+                  draggable
+                  onDragEnd={(e) => {
+                    dragEndHandler(e, i, false);
+                  }}
+                  style={comp.style}
+                  className={'custom-form'}>
+                  <form style={formStyleData}>
+                    <label>First Name</label>
+                    <input
+                      type="text"
+                      id="fname"
+                      name="firstname"
+                      placeholder="Your name.."
+                      style={formStyleData.custom_form_input_type__text}
+                    />
+
+                    <label>Last Name</label>
+                    <input
+                      type="text"
+                      id="lname"
+                      name="lastname"
+                      placeholder="Your last name.."
+                      style={formStyleData.custom_form_input_type__text}
+                    />
+
+                    <label>Country</label>
+                    <select id="country" name="country" style={formStyleData.custom_form_select}>
+                      <option value="australia">Australia</option>
+                      <option value="canada">Canada</option>
+                      <option value="usa">USA</option>
+                    </select>
+
+                    <button type="button" style={formStyleData.custom_form_button}>
+                      submit
+                    </button>
+                  </form>
+                </div>
+              );
           }
         })
       ) : (
-        <p>Preview</p>
+        <div className={'preview-Page'} ref={previewRef}>
+          {previewComponent}
+        </div>
       )}
       {isMode ? (
         <FormDialog
@@ -244,16 +456,5 @@ function CustomApp() {
     </div>
   );
 }
-
-const checkOverflow = (x, y, width, height, windowSize) => {
-  if (
-    x + width / 2 > windowSize[0] ||
-    y + height / 2 > windowSize[1] ||
-    y - height / 2 < 0 ||
-    x - width / 2 < 0
-  ) {
-    return true;
-  }
-};
 
 export default CustomApp;

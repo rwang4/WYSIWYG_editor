@@ -1,3 +1,6 @@
+/**
+ * Header Component with ChangeMode Button and Preview Button**
+ */
 import { useState } from 'react';
 import './Header.css';
 import useModeContext from '../../contexts/ModeContext';
@@ -17,9 +20,10 @@ const StyledToggleButton = styled(ToggleButton)(({ hovercolor }) => ({
     borderRadius: '40px'
   }
 }));
-function Header() {
+function Header({ handleClickOpen }) {
   const { isEdit } = useModeContext();
   const iFrameRef = useRefContext();
+
   const [isChecked, setChecked] = useState(isEdit);
   const modeContext = useModeContext();
 
@@ -33,6 +37,7 @@ function Header() {
             value={isChecked ? 'preview' : 'edit'}
             selected={isChecked}
             onChange={() => {
+              // Pass 'modeChange' data to Custom App Window
               modeContext.changeMode();
               setChecked(!isChecked);
               iFrameRef?.current?.contentWindow.postMessage('modeChange', '*');
@@ -43,7 +48,11 @@ function Header() {
         </div>
         <div className="btn-container code">
           <span>Export</span>
-          <StyledToggleButton value={'code'} onChange={() => {}} hovercolor="#13152e">
+          <StyledToggleButton
+            value={'code'}
+            disabled={isEdit}
+            onChange={handleClickOpen}
+            hovercolor="#13152e">
             <CodeIcon color="secondary" />
           </StyledToggleButton>
         </div>

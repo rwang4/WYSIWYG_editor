@@ -1,7 +1,8 @@
 import useRefContext from '../../contexts/RefContext';
-
 import './CustomContainer.css';
-
+/**
+ * custom container with inline frame to embed Custom App document within the current HTML document**
+ */
 function CustomContainer() {
   const iFrameRef = useRefContext();
 

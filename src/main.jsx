@@ -7,6 +7,7 @@ import './index.css';
 import CustomApp from './components/custom/CustomApp';
 import { ModeProvider } from './contexts/ModeContext';
 import { RefProvider } from './contexts/RefContext';
+
 const theme = createTheme({
   palette: {
     secondary: {

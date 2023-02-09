@@ -1,3 +1,7 @@
+/**
+ * This is a global context to store window size dynamically**
+ */
+
 import { useCallback, useEffect, useState, createContext } from 'react';
 export const WindowContext = createContext({ clientHeight: 0, clientWidth: 0 });
 export const WindowContextProvider = ({ children }) => {

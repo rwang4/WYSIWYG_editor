@@ -1,3 +1,6 @@
+/**
+ * This is a global context to record changes of mode {Edit, Preview}**
+ */
 import { createContext, useState, useContext } from 'react';
 
 const ModeContext = createContext();

@@ -11,9 +11,6 @@ import Select from '@mui/material/Select';
 import FormHelperText from '@mui/material/FormHelperText';
 import { btnDef } from '../../../data/ComponentData';
 
-/**
- * edittor dialog to edit button styles
- */
 export default function FormDialog({ open, comp, setComp, closeHandler }) {
   const [text, setText] = useState(btnDef.text);
   const [width, setWidth] = useState(btnDef.width);

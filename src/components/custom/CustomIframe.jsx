@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import useRefContext from '../../contexts/RefContext';
 
+/**
+ * custom iframe element with Custom App Component as window
+ * substitute by react-route-dom package (NOT USED)**
+ */
+
 const CustomIframe = ({ children, ...props }) => {
   const iFrameRef = useRefContext();
   const [ref, setRef] = useState(null);
