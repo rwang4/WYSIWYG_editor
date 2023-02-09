@@ -7,6 +7,10 @@ WYSIWYG Editor is a simple WYSIWYG drag-and-drop editor which should be able to
 3. Ability to change between edit and preview mode
 4. Ability to display and export Custom Application source code.
 
+## Installation
+```npm install```
+```npm run dev```
+
 ## Packages
 
 react-code-block: use to display code block for HTML source code review
