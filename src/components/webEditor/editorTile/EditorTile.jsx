@@ -20,21 +20,13 @@ function EditorTile(props) {
     setY(0);
   }, [x, y]);
 
-  const handleDragStart = (event) => {
-    console.log('Started');
-  };
   const handleDragEnd = (event) => {
     setX(event.clientX);
     setY(event.clientY);
   };
 
   return (
-    <div
-      className="editor-tile"
-      title="Text"
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}>
+    <div className="editor-tile" title="Text" draggable onDragEnd={handleDragEnd}>
       <div className="editor-tile-media">
         <svg viewBox="0 0 24 24">
           <path fill="currentColor" d={props.svgPath}></path>

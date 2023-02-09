@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
+import Draggable from 'react-draggable';
 import './CustomApp.css';
-import { txtDef, btnDef } from '../../data/ComponentData';
+import { txtDef, btnDef, imgDef } from '../../data/ComponentData';
 import { checkOverflow } from '../../contexts/globalFunc';
-import FormDialog from './formDialog/FormDialog';
+import FormDialog from './form/FormDialog';
 
 function CustomApp() {
   const compCount = useRef(0);
@@ -10,6 +11,7 @@ function CustomApp() {
   const [editComponentList, setEditComponentList] = useState([]);
   const [isMode, setMode] = useState(true);
   const [open, setOpen] = useState(false);
+  const [canClick, setCanClick] = useState(true);
   const [currentComp, setCurrentComp] = useState({});
   const addEditComponent = (comp) => {
     setEditComponentList([...editComponentList, comp]);
@@ -22,6 +24,7 @@ function CustomApp() {
       changeMode();
     } else {
       const dataObj = JSON.parse(event.data);
+      console.log(dataObj.x, dataObj.y);
       switch (dataObj.type) {
         case 'Text':
           if (checkOverflow(dataObj.x, dataObj.y, txtDef.width, txtDef.height, clientSize)) {
@@ -33,6 +36,8 @@ function CustomApp() {
             text: txtDef.text,
             width: txtDef.width,
             height: txtDef.height,
+            x: dataObj.x - txtDef.width / 2,
+            y: dataObj.y - txtDef.height / 2,
             style: {
               position: 'absolute',
               left: `${dataObj.x - txtDef.width / 2}px`,
@@ -60,6 +65,8 @@ function CustomApp() {
             text: btnDef.text,
             width: btnDef.width,
             height: btnDef.height,
+            x: dataObj.x,
+            y: dataObj.y,
             style: {
               position: 'absolute',
               left: `${dataObj.x - btnDef.width / 2}px`,
@@ -77,6 +84,28 @@ function CustomApp() {
           compCount.current += 1;
           break;
         case 'Image':
+          if (checkOverflow(dataObj.x, dataObj.y, imgDef.width, imgDef.height, clientSize)) {
+            break;
+          }
+          addEditComponent({
+            id: compCount.current,
+            type: 'img',
+            src: imgDef.src,
+            alt: 'Paris',
+            width: imgDef.width,
+            height: imgDef.height,
+            x: dataObj.x - imgDef.width / 2,
+            y: dataObj.y - imgDef.height / 2,
+            style: {
+              position: 'absolute',
+              left: `${dataObj.x - imgDef.width / 2}px`,
+              top: `${dataObj.y - imgDef.height / 2}px`,
+              borderRadius: imgDef.borderRadius,
+              height: imgDef.height,
+              width: imgDef.width,
+              overflow: 'hidden'
+            }
+          });
           compCount.current += 1;
           break;
         case 'Input':
@@ -91,6 +120,10 @@ function CustomApp() {
     }
   };
   const openHandler = (id) => {
+    if (!canClick) {
+      setCanClick(true);
+      return;
+    }
     editComponentList.map((comp, i) => {
       if (i === id) {
         setCurrentComp(comp);
@@ -102,17 +135,18 @@ function CustomApp() {
   const closeHandler = () => {
     setOpen(false);
   };
-
-  const dragEndHandler = (event, id) => {
-    const draggedComponent = editComponentList.map((comp, i) => {
-      const posX = event.clientX - comp.width / 2;
-      const posY = event.clientY - comp.height / 2;
-      if (
-        i === id &&
-        !checkOverflow(event.clientX, event.clientY, comp.width, comp.height, clientSize)
-      ) {
+  const onDragHandler = () => {
+    setCanClick(false);
+  };
+  const onStopHandler = (event, data, i) => {
+    const draggedComponent = editComponentList.map((comp, idx) => {
+      const posX = comp.x + data.x - comp.width / 2;
+      const posY = comp.y + data.y - comp.height / 2;
+      if (idx === i) {
         comp = {
           ...comp,
+          x: posX,
+          y: posY,
           style: {
             ...comp.style,
             left: `${posX}px`,
@@ -162,30 +196,44 @@ function CustomApp() {
           switch (comp.type) {
             case 'txt':
               return (
-                <p
+                <Draggable
                   key={comp.id}
-                  style={comp.style}
-                  draggable
-                  onDragEnd={(e) => {
-                    dragEndHandler(e, i);
-                  }}>
-                  {comp.text}
-                </p>
+                  bounds="parent"
+                  onStop={(e, data) => onStopHandler(e, data, i)}>
+                  <p style={comp.style}>{comp.text}</p>
+                </Draggable>
               );
             case 'btn':
               return (
-                <button
+                <Draggable
                   key={comp.id}
-                  style={comp.style}
-                  draggable
-                  onDragEnd={(e) => {
-                    dragEndHandler(e, i);
-                  }}
-                  onClick={() => {
-                    openHandler(i);
-                  }}>
-                  {comp.text}
-                </button>
+                  bounds="parent"
+                  onDrag={onDragHandler}
+                  onStop={(e, data) => onStopHandler(e, data, i)}>
+                  <button
+                    style={comp.style}
+                    onClick={() => {
+                      openHandler(i);
+                    }}>
+                    {comp.text}
+                  </button>
+                </Draggable>
+              );
+            case 'img':
+              return (
+                <Draggable
+                  key={comp.id}
+                  bounds="parent"
+                  onStop={(e, data) => onStopHandler(e, data, i)}>
+                  <img
+                    src={comp.src}
+                    alt={comp.alt}
+                    style={comp.style}
+                    onDragStart={(e) => {
+                      e.preventDefault();
+                    }}
+                  />
+                </Draggable>
               );
           }
         })
