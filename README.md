@@ -9,6 +9,7 @@ WYSIWYG Editor is a simple WYSIWYG drag-and-drop editor which should be able to
 
 ## Installation
 ```npm install```
+
 ```npm run dev```
 
 ## Packages
