@@ -23,7 +23,7 @@ react-route-dom: manage route for react, especially used with inline frame to em
    }
    ```
 
-2. When dragging the custom element to change it's position, the **centre**  of the custom element will be changed regarding to the **mouse's position**.
+2. When dragging the custom element to change it's position, the **centre**  of the custom element will be placed to the **mouse's position**.
 
 3. APP doesn't support **MOBILE VIEWPORT**
 
