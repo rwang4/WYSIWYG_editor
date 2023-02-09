@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './CustomApp.css';
-import { txtDef, btnDef } from '../../data/ComponentData';
-import { checkOverflow } from '../../contexts/globalFunc';
-import FormDialog from './formDialog/FormDialog';
+import { txtDef, btnDef, imgDef, inputDef, formDef } from '../../data/ComponentData';
+import FormDialog from './form/FormDialog';
 
 function CustomApp() {
   const compCount = useRef(0);
@@ -77,6 +76,26 @@ function CustomApp() {
           compCount.current += 1;
           break;
         case 'Image':
+          if (checkOverflow(dataObj.x, dataObj.y, imgDef.width, imgDef.height, clientSize)) {
+            break;
+          }
+          addEditComponent({
+            id: compCount.current,
+            type: 'img',
+            src: imgDef.src,
+            alt: 'Paris',
+            width: imgDef.width,
+            height: imgDef.height,
+            style: {
+              position: 'absolute',
+              left: `${dataObj.x - imgDef.width / 2}px`,
+              top: `${dataObj.y - imgDef.height / 2}px`,
+              borderRadius: imgDef.borderRadius,
+              height: imgDef.height,
+              width: imgDef.width,
+              overflow: 'hidden'
+            }
+          });
           compCount.current += 1;
           break;
         case 'Input':
@@ -103,13 +122,21 @@ function CustomApp() {
     setOpen(false);
   };
 
-  const dragEndHandler = (event, id) => {
+  const dragEndHandler = (event, id, isSpecial) => {
     const draggedComponent = editComponentList.map((comp, i) => {
-      const posX = event.clientX - comp.width / 2;
-      const posY = event.clientY - comp.height / 2;
+      const posX = isSpecial
+        ? event.clientX - (2 * comp.width) / 2
+        : event.clientX - comp.width / 2;
+      const posY = isSpecial ? event.clientY : event.clientY - comp.height / 2;
       if (
         i === id &&
-        !checkOverflow(event.clientX, event.clientY, comp.width, comp.height, clientSize)
+        !checkOverflow(
+          isSpecial ? event.clientX - comp.width / 2 : event.clientX,
+          isSpecial ? event.clientY + comp.height / 2 : event.clientY,
+          comp.width,
+          comp.height,
+          clientSize
+        )
       ) {
         comp = {
           ...comp,
@@ -167,7 +194,7 @@ function CustomApp() {
                   style={comp.style}
                   draggable
                   onDragEnd={(e) => {
-                    dragEndHandler(e, i);
+                    dragEndHandler(e, i, false);
                   }}>
                   {comp.text}
                 </p>
@@ -179,13 +206,25 @@ function CustomApp() {
                   style={comp.style}
                   draggable
                   onDragEnd={(e) => {
-                    dragEndHandler(e, i);
+                    dragEndHandler(e, i, false);
                   }}
                   onClick={() => {
                     openHandler(i);
                   }}>
                   {comp.text}
                 </button>
+              );
+            case 'img':
+              return (
+                <img
+                  key={comp.id}
+                  src={comp.src}
+                  alt={comp.alt}
+                  style={comp.style}
+                  onDragEnd={(e) => {
+                    dragEndHandler(e, i, true);
+                  }}
+                />
               );
           }
         })
@@ -205,5 +244,16 @@ function CustomApp() {
     </div>
   );
 }
+
+const checkOverflow = (x, y, width, height, windowSize) => {
+  if (
+    x + width / 2 > windowSize[0] ||
+    y + height / 2 > windowSize[1] ||
+    y - height / 2 < 0 ||
+    x - width / 2 < 0
+  ) {
+    return true;
+  }
+};
 
 export default CustomApp;
