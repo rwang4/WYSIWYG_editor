@@ -27,6 +27,6 @@ react-route-dom: manage route for react, especially used with inline frame to em
 
 3. APP doesn't support **MOBILE VIEWPORT**
 
-4. To edit css styling for custom element, just click on the custom element within the edit mode. An edittor dialog will pop up. **ONLY APPLIED TO `<button>` ELEMENT**
+4. To edit css styling for custom element, just click on the custom element within the edit mode. An editor dialog will pop up. **ONLY APPLIED TO `<button>` ELEMENT**
 
 In addition, if there is any issue or confusion, please contact me via rickywang1123@gmail.com
